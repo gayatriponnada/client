@@ -1,16 +1,22 @@
 <script lang="ts">
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
+	import { toast } from 'svelte-sonner';
 	import { loginSchema, type LoginSchema } from '$lib/database/schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-
 	export let data: SuperValidated<Infer<LoginSchema>>;
-
 	const form = superForm(data, {
-		validators: zodClient(loginSchema)
+		validators: zodClient(loginSchema),
+		onUpdated: ({ form: f }) => {
+			if (f.valid) {
+				console.log(toast.success('Login successful'));
+			} else {
+				toast.error('Please fix the errors in the form.');
+			}
+		}
 	});
-
+	export { data as form };
 	const { form: formData, enhance } = form;
 </script>
 
@@ -33,8 +39,9 @@
 				<Form.FieldErrors />
 			</Form.Field>
 			<div class="p-5">
-				<Form.Button class="p-5 w-full ">Login</Form.Button>
+				<Form.Button class="p-5 w-full">Login</Form.Button>
 			</div>
 		</div>
 	</form>
+	<!-- <p class="text-destructive">{message}</p> -->
 </main>

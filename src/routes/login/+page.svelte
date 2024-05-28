@@ -5,4 +5,4 @@
 
 <svelte:head><title>Login</title></svelte:head>
 
-<LoginForm data={data.form} />
+<LoginForm form={data.form} />

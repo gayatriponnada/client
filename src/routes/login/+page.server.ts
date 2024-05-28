@@ -4,6 +4,7 @@ import { loginSchema } from "$lib/database/schema";
 import { zod } from "sveltekit-superforms/adapters";
 import { fail } from "@sveltejs/kit";
 
+
 export const load: PageServerLoad = async () => {
 	return {
 		form: await superValidate(zod(loginSchema)),
@@ -12,11 +13,7 @@ export const load: PageServerLoad = async () => {
 export const actions = {
 	login: async (event) => {
 		const form = await superValidate(event, zod(loginSchema));
-		if (!form.valid) {
-			return fail(400, {
-				form,
-			});
-		}
+
 
 		const { email, password } = form.data as {
 			email: string;
@@ -29,20 +26,32 @@ export const actions = {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ email, password })
+				body: JSON.stringify({ email, password }),
 			});
 			console.log("Res: ", response);
 			if (response.status == 400) {
 				const result = await response.json();
-				form.errors.password = [result.message as string];
-				return fail(400, {
-					form
-				});
+				if (result.message === "User does not exist") {
+					form.errors.email = [result.message as string];
+					return fail(400, {
+						form
+					});
+				}
+				if (result.message === "Incorrect password") {
+					form.errors.password = [result.message as string];
+					return fail(400, {
+						form
+					});
+				}
 			}
 			if (response.status == 201) {
 				const result = await response.json();
 				form.message = [result.message as string];
-				console.log(form.message);
+				console.log("form.message: ", form.message);
+				return {
+					status: 201,
+					message: form.message,
+				};
 			}
 		}
 		catch (err) {
