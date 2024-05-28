@@ -21,7 +21,7 @@ export const actions = {
 		};
 		console.log(form);
 		try {
-			const response = await fetch("http://localhost:3002/auth/login", {
+			const response = await event.fetch("http://localhost:3002/auth/login", {
 				method: "post",
 				headers: {
 					"Content-Type": "application/json",
@@ -44,12 +44,16 @@ export const actions = {
 					});
 				}
 			}
-			if (response.status == 201) {
+			if (response.status == 200) {
 				const result = await response.json();
 				form.message = [result.message as string];
-				console.log("form.message: ", form.message);
+				const { token } = result.data;
+				event.cookies.set("COOKIE", token, {
+					path: '/'
+				});
 				return {
-					status: 201,
+					status: 200,
+					form,
 					message: form.message,
 				};
 			}

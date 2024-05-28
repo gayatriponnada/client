@@ -5,14 +5,14 @@
 	import { loginSchema, type LoginSchema } from '$lib/database/schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { goto } from '$app/navigation';
 	export let data: SuperValidated<Infer<LoginSchema>>;
 	const form = superForm(data, {
 		validators: zodClient(loginSchema),
-		onUpdated: ({ form: f }) => {
-			if (f.valid) {
-				console.log(toast.success('Login successful'));
-			} else {
-				toast.error('Please fix the errors in the form.');
+		onResult: async ({ result }) => {
+			if (result.type == 'success') {
+				toast.success('Login successful');
+				await goto('/');
 			}
 		}
 	});
