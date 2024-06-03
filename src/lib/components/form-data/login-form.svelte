@@ -43,5 +43,4 @@
 			</div>
 		</div>
 	</form>
-	<!-- <p class="text-destructive">{message}</p> -->
 </main>

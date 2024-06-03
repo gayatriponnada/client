@@ -87,3 +87,27 @@ export const resetPasswordSchema = z.object({
 	path: ['confirmPassword'],
 });
 export type ResetPasswordSchema = typeof resetPasswordSchema;
+
+export const discussionSchema = z.object({
+	title: z.string()
+		.min(2, 'Title must be at least 2 characters')
+		.max(50, 'Title must be at most 50 characters'),
+	date: z.string({ required_error: "Please enter a date of discussion" }),
+	time: z.string({ required_error: "Please enter a of discussion" }),
+	type: z
+		.string({ required_error: "Please select an type of discussion" })
+
+});
+export type DiscussionSchema = typeof discussionSchema;
+
+export const forumSchema = z.object({
+	title: z.string()
+		.min(2, 'Title must be at least 2 characters')
+		.max(50, 'Title must be at most 50 characters'),
+	create: z.boolean().default(false),
+	display: z.boolean().default(false),
+	allow: z.boolean().default(false),
+	topic: z.boolean().default(false),
+	description: z.string()
+});
+export type ForumSchema = typeof forumSchema;
