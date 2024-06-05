@@ -7,9 +7,12 @@
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
-	import Label from '../ui/label/label.svelte';
+	import Label from '$lib/components/ui/label/label.svelte';
+	import Feedback from '../../../routes/forum/feedback.svelte';
+	import Button from '../ui/button/button.svelte';
 
 	let editor: any;
+	let showFeedback = false;
 
 	export let toolbarOptions = [
 		[
@@ -56,9 +59,16 @@
 	});
 
 	const { form: formData, enhance } = form;
+
+	function handleClick() {
+		showFeedback = !showFeedback;
+	}
 </script>
 
-<main class=" w-screen h-screen">
+<main class=" w-screen h-screen overflow-x-hidden">
+	{#if showFeedback}
+		<Feedback on:close={handleClick} />
+	{/if}
 	<h2 class="text-3xl p-5">New Forum</h2>
 	<form action="" method="POST" use:enhance class="">
 		<div class="  border-2 rounded-md flex flex-col gap-2 m-5">
@@ -136,11 +146,15 @@
 					<input name={attrs.name} value={$formData.topic} hidden />
 				</Form.Control>
 			</Form.Field>
-
-			<div class="p-5">
-				<Form.Button class="p-5">Save and Add Topic</Form.Button>
-				<Form.Button class="p-5">Save</Form.Button>
-				<Form.Button class="p-5">Cancel</Form.Button>
+			<div class="flex justify-between">
+				<div class="p-5">
+					<Form.Button class="p-5">Save and Add Topic</Form.Button>
+					<Form.Button class="p-5">Save</Form.Button>
+					<Form.Button class="p-5">Cancel</Form.Button>
+				</div>
+				<div class="flex items-center p-5">
+					<Button on:click={handleClick}>Feedback</Button>
+				</div>
 			</div>
 		</div>
 	</form>
